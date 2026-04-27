@@ -8,9 +8,6 @@ importers:
 
   .:
     dependencies:
-      '@tailwindcss/vite':
-        specifier: ^4.2.4
-        version: 4.2.4(vite@8.0.10(@types/node@24.12.2)(jiti@2.6.1))
       react:
         specifier: ^19.2.5
         version: 19.2.5
@@ -24,6 +21,9 @@ importers:
       '@biomejs/biome':
         specifier: ^2.4.13
         version: 2.4.13
+      '@tailwindcss/vite':
+        specifier: ^4.2.4
+        version: 4.2.4(vite@8.0.10(@types/node@24.12.2)(jiti@2.6.1))
       '@types/node':
         specifier: ^24.12.2
         version: 24.12.2
@@ -40,7 +40,7 @@ importers:
         specifier: ^17.5.0
         version: 17.5.0
       typescript:
-        specifier: ~6.0.2
+        specifier: ~6.0.3
         version: 6.0.3
       vite:
         specifier: ^8.0.10
@@ -468,8 +468,8 @@ packages:
     resolution: {integrity: sha512-QP88BAKvMam/3NxH6vj2o21R6MjxZUAd6nlwAS/pnGvN9IVLocLHxGYIzFhg6fUQ+5th6P4dv4eW9jX3DSIj7A==}
     engines: {node: '>=12'}
 
-  postcss@8.5.10:
-    resolution: {integrity: sha512-pMMHxBOZKFU6HgAZ4eyGnwXF/EvPGGqUr0MnZ5+99485wwW41kW91A4LOGxSHhgugZmSChL5AlElNdwlNgcnLQ==}
+  postcss@8.5.12:
+    resolution: {integrity: sha512-W62t/Se6rA0Az3DfCL0AqJwXuKwBeYg6nOaIgzP+xZ7N5BFCI7DYi1qs6ygUYT6rvfi6t9k65UMLJC+PHZpDAA==}
     engines: {node: ^10 || ^12 || >=14}
 
   react-dom@19.2.5:
@@ -863,7 +863,7 @@ snapshots:
 
   picomatch@4.0.4: {}
 
-  postcss@8.5.10:
+  postcss@8.5.12:
     dependencies:
       nanoid: 3.3.11
       picocolors: 1.1.1
@@ -921,7 +921,7 @@ snapshots:
     dependencies:
       lightningcss: 1.32.0
       picomatch: 4.0.4
-      postcss: 8.5.10
+      postcss: 8.5.12
       rolldown: 1.0.0-rc.17
       tinyglobby: 0.2.16
     optionalDependencies:
