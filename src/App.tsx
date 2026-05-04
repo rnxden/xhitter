@@ -4,6 +4,7 @@ import { Feed } from './components/Feed'
 import { RightSidebar } from './components/RightSidebar'
 import { SpinWheelModal } from './components/SpinWheelModal'
 import { PaywallModal } from './components/PaywallModal'
+import { MobileGate } from './components/MobileGate'
 
 export default function App() {
   const [showSpin, setShowSpin] = useState(false)
@@ -12,6 +13,7 @@ export default function App() {
   const [viralConfirmClose, setViralConfirmClose] = useState(false)
 
   useEffect(() => {
+    if (window.innerWidth < 640) return
     const viralId = setTimeout(() => setShowViral(true), 8000)
     const spinDelay = 30000 + Math.random() * 30000
     const spinId = setTimeout(() => setShowSpin(true), spinDelay)
@@ -29,8 +31,13 @@ export default function App() {
 
   return (
     <div className="min-h-screen text-[#f0f2f8]">
+      {/* Mobile gate — replaces everything on small screens */}
+      <div className="sm:hidden">
+        <MobileGate />
+      </div>
+
       {/* Aurora — z:-1 so it's above body canvas but below all content */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden" style={{ zIndex: -1 }}>
+      <div className="fixed inset-0 pointer-events-none overflow-hidden hidden sm:block" style={{ zIndex: -1 }}>
         <div style={{ position: 'absolute', left: '-160px', top: '8%', width: '480px', height: '480px', borderRadius: '50%', background: '#e879f9', filter: 'blur(130px)', opacity: 0.18, animation: 'aurora 9s ease-in-out infinite' }} />
         <div style={{ position: 'absolute', left: '-120px', bottom: '10%', width: '360px', height: '360px', borderRadius: '50%', background: '#a78bfa', filter: 'blur(110px)', opacity: 0.18, animation: 'aurora 11s ease-in-out infinite 2.5s' }} />
         <div style={{ position: 'absolute', right: '-160px', top: '15%', width: '480px', height: '480px', borderRadius: '50%', background: '#22d3ee', filter: 'blur(130px)', opacity: 0.18, animation: 'aurora 8s ease-in-out infinite 1s' }} />
@@ -38,10 +45,8 @@ export default function App() {
         <div style={{ position: 'absolute', left: '30%', top: '-80px', width: '320px', height: '320px', borderRadius: '50%', background: '#34d399', filter: 'blur(100px)', opacity: 0.18, animation: 'aurora 10s ease-in-out infinite 1.5s' }} />
       </div>
 
-      {/* Content wrapper — no z-index so it doesn't create a stacking context.
-          This lets all fixed modals from child components participate in the
-          root stacking context at their declared z-index. */}
-      <div className="max-w-[1280px] mx-auto flex min-h-screen">
+      {/* Content wrapper — desktop only */}
+      <div className="hidden sm:flex max-w-[1280px] mx-auto min-h-screen">
         <aside className="hidden sm:flex w-[68px] xl:w-[275px] shrink-0 sticky top-0 h-screen flex-col px-1 xl:px-2">
           <LeftSidebar />
         </aside>
@@ -56,11 +61,11 @@ export default function App() {
         </aside>
       </div>
 
-      {/* Floating spin button — z-40 in root stacking context */}
+      {/* Floating spin button — desktop only */}
       <button
         type="button"
         onClick={() => setShowSpin(true)}
-        className="fixed bottom-6 right-6 z-40 btn-rainbow text-white font-black text-sm px-4 py-3 rounded-full hover:opacity-90 transition-opacity"
+        className="hidden sm:block fixed bottom-6 right-6 z-40 btn-rainbow text-white font-black text-sm px-4 py-3 rounded-full hover:opacity-90 transition-opacity"
         style={{ boxShadow: '0 0 28px rgba(250, 204, 21, 0.55), 0 0 56px rgba(250, 204, 21, 0.25)' }}
       >
         🎰 SPIN TO WIN
