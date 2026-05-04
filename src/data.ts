@@ -188,7 +188,6 @@ export const tweets: Tweet[] = [
     retweetCount: 3300,
     likeCount: 28900,
     viewCount: '760K',
-    imageBg: '#0f172a',
   },
   {
     id: 't7',
