@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
+import { PurchaseModal } from './PurchaseModal'
+import type { PurchaseItem } from './PurchaseModal'
 
 type Props = { onClose: () => void; feature?: string; detected?: boolean }
 
@@ -31,6 +33,7 @@ export function PaywallModal({ onClose, feature = 'this feature', detected = fal
   const [annual, setAnnual] = useState(false)
   const [selectedPlan, setSelectedPlan] = useState(1)
   const [confirmClose, setConfirmClose] = useState(false)
+  const [purchaseItem, setPurchaseItem] = useState<PurchaseItem | null>(null)
 
   useEffect(() => {
     const id = setInterval(() => setSeconds((s) => (s > 0 ? s - 1 : 299)), 1000)
@@ -48,7 +51,7 @@ export function PaywallModal({ onClose, feature = 'this feature', detected = fal
     setConfirmClose(true)
   }
 
-  return createPortal(
+  const portal = createPortal(
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
       <div
@@ -163,6 +166,15 @@ export function PaywallModal({ onClose, feature = 'this feature', detected = fal
 
         <button
           type="button"
+          onClick={() =>
+            setPurchaseItem({
+              emoji: plan.emoji,
+              name: `${plan.name} Plan`,
+              description: plan.perks.join(' · '),
+              price: annual ? `$${(price * 12).toFixed(2)}/yr` : `$${price}/mo`,
+              quantityLabel: `${plan.name} ${annual ? '(Annual)' : '(Monthly)'}`,
+            })
+          }
           className="btn-rainbow w-full py-3 rounded-xl text-white font-black text-base hover:opacity-90 transition-opacity mb-2"
         >
           Get {plan.name} — ${price}/mo 🎉
@@ -180,5 +192,21 @@ export function PaywallModal({ onClose, feature = 'this feature', detected = fal
       </div>
     </div>,
     document.body
+  )
+
+  return (
+    <>
+      {portal}
+      {purchaseItem && (
+        <PurchaseModal
+          item={purchaseItem}
+          onClose={() => setPurchaseItem(null)}
+          onSuccess={() => {
+            setPurchaseItem(null)
+            onClose()
+          }}
+        />
+      )}
+    </>
   )
 }
