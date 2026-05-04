@@ -119,6 +119,65 @@ export const trendingTopics: TrendingTopic[] = [
   { category: 'Trending in US', topic: '#RentIsUnreal', postCount: '103K' },
 ]
 
+// ─── Prediction markets (right sidebar + feed card) ──────────────────────────
+
+export type PredictionMarket = {
+  id: string
+  question: string
+  yesOdds: number
+  noOdds: number
+  volume: string
+  closesLabel: string
+  activity: string
+  expertSignal: string
+  nearMiss: { YES: string; NO: string }
+}
+
+export const predictionMarkets: PredictionMarket[] = [
+  {
+    id: 'm1',
+    question: 'Will the Fed cut rates in Q2 2026?',
+    yesOdds: 44,
+    noOdds: 56,
+    volume: '$2.1M',
+    closesLabel: 'LIVE',
+    activity: '847 bets in the last hour',
+    expertSignal: 'Strong NO',
+    nearMiss: {
+      YES: 'YES peaked at 49% before a last-minute NO sweep. You were this close.',
+      NO: 'Resolved YES. A single $80K bet flipped the market in the final 90 seconds.',
+    },
+  },
+  {
+    id: 'm2',
+    question: 'Another AI lab claims AGI by EOY 2026?',
+    yesOdds: 91,
+    noOdds: 9,
+    volume: '$890K',
+    closesLabel: '6h 12m',
+    activity: 'Gary Null just won $38.40 · 2m ago',
+    expertSignal: 'Hedge YES',
+    nearMiss: {
+      YES: 'Resolved NO. First time this market flipped in 3 months. You picked the wrong day.',
+      NO: "Resolved YES. Bold play on the 9%. Should've gone with the crowd.",
+    },
+  },
+  {
+    id: 'm3',
+    question: 'Will rent drop in any major US city by Q3?',
+    yesOdds: 12,
+    noOdds: 88,
+    volume: '$445K',
+    closesLabel: '2d 4h',
+    activity: '1,203 bets today',
+    expertSignal: 'Strong NO',
+    nearMiss: {
+      YES: "Resolved NO. Gutsy 8-to-1 play. The market loved you until it didn't.",
+      NO: 'Resolved YES. Chad Grift called it — Premium Signal holders walked away up.',
+    },
+  },
+]
+
 // ─── Feed tweets ─────────────────────────────────────────────────────────────
 
 export const tweets: Tweet[] = [

@@ -1,9 +1,185 @@
 import { Fragment, useState } from 'react'
 import { createPortal } from 'react-dom'
-import { tweets, currentUser } from '../data'
+import { tweets, currentUser, predictionMarkets } from '../data'
 import { TweetCard } from './Tweet'
 import { PaywallModal } from './PaywallModal'
 import { PurchaseModal } from './PurchaseModal'
+
+const BET_AMOUNTS = [1, 5, 10, 25]
+function calcWin(amount: number, odds: number) {
+  return ((100 / odds) * 0.85 * amount).toFixed(2)
+}
+
+function MarketBetModal({ side, onClose }: { side: 'YES' | 'NO'; onClose: () => void }) {
+  const market = predictionMarkets[0]
+  const odds = side === 'YES' ? market.yesOdds : market.noOdds
+  const [betPurchaseItem, setBetPurchaseItem] = useState<{ emoji: string; name: string; description: string; price: string; quantityLabel: string } | null>(null)
+  const [settled, setSettled] = useState(false)
+  const [confirmClose, setConfirmClose] = useState(false)
+
+  const handleClose = () => {
+    if (settled) { onClose(); return }
+    if (confirmClose) { onClose(); return }
+    setConfirmClose(true)
+  }
+
+  const placeBet = (amount: number) => {
+    setBetPurchaseItem({
+      emoji: '🔮',
+      name: `${side} — ${market.question}`,
+      description: `Potential win: $${calcWin(amount, odds)} · We only take a tiny 15% cut of your winnings 🤝`,
+      price: `$${amount.toFixed(2)}`,
+      quantityLabel: `${side} at ${odds}% odds`,
+    })
+  }
+
+  return (
+    <>
+      {createPortal(
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
+          <div
+            className="relative bg-[#131720] rounded-2xl p-5 max-w-sm w-full border border-[#1e2636]"
+            style={{ boxShadow: '0 0 60px rgba(251,146,60,0.3)' }}
+          >
+            <button
+              type="button"
+              onClick={handleClose}
+              className="absolute top-4 right-4 text-xs font-bold transition-colors"
+              style={{ color: confirmClose ? '#f87171' : '#6b7591' }}
+            >
+              {confirmClose ? 'Sure? 💔' : '✕'}
+            </button>
+
+            {settled ? (
+              <>
+                <div className="text-center mb-4">
+                  <div className="text-4xl mb-2">📉</div>
+                  <h2 className="text-lg font-black" style={{ color: '#f87171' }}>Market Resolved 😤</h2>
+                  <p className="text-[#6b7591] text-sm mt-1">{market.nearMiss[side]}</p>
+                </div>
+                <button
+                  type="button"
+                  onClick={onClose}
+                  className="btn-rainbow w-full py-3 rounded-xl text-white font-black text-sm hover:opacity-90 transition-opacity"
+                >
+                  Close
+                </button>
+              </>
+            ) : (
+              <>
+                <div className="mb-4">
+                  <span
+                    className="text-[10px] font-black px-2 py-0.5 rounded-full mb-2 inline-block"
+                    style={{ backgroundColor: '#fb923c20', color: '#fb923c', border: '1px solid #fb923c40' }}
+                  >
+                    🔮 Live Market · ⏰ Closing Soon
+                  </span>
+                  <p className="font-black text-base text-[#f0f2f8] leading-snug mb-2">{market.question}</p>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-black shrink-0" style={{ color: '#34d399' }}>YES {market.yesOdds}%</span>
+                    <div className="flex-1 h-1.5 rounded-full overflow-hidden bg-[#2a3547]">
+                      <div className="h-full rounded-full bg-[#34d399]" style={{ width: `${market.yesOdds}%` }} />
+                    </div>
+                    <span className="text-xs font-black shrink-0" style={{ color: '#f87171' }}>NO {market.noOdds}%</span>
+                  </div>
+                </div>
+
+                <div className="mb-1">
+                  <span className="text-sm font-black" style={{ color: side === 'YES' ? '#34d399' : '#f87171' }}>
+                    Betting {side} — pick an amount
+                  </span>
+                </div>
+                <div className="grid grid-cols-2 gap-2 mb-3">
+                  {BET_AMOUNTS.map((amt) => (
+                    <button
+                      key={amt}
+                      type="button"
+                      onClick={() => placeBet(amt)}
+                      className="rounded-xl py-2.5 px-3 text-left hover:opacity-90 transition-opacity"
+                      style={{ backgroundColor: '#1e2636', border: '1px solid #2a3547' }}
+                    >
+                      <div className="text-sm font-black text-[#f0f2f8]">${amt}</div>
+                      <div className="text-xs" style={{ color: '#34d399' }}>→ ${calcWin(amt, odds)}</div>
+                    </button>
+                  ))}
+                </div>
+                <p className="text-[9px] text-[#3d4a5c] text-center">* We only take a tiny 15% cut of your winnings 🤝</p>
+              </>
+            )}
+          </div>
+        </div>,
+        document.body
+      )}
+
+      {betPurchaseItem && (
+        <PurchaseModal
+          item={betPurchaseItem}
+          onClose={() => setBetPurchaseItem(null)}
+          onSuccess={() => { setBetPurchaseItem(null); setSettled(true) }}
+        />
+      )}
+    </>
+  )
+}
+
+function MarketFeedCard({ onPickSide }: { onPickSide: (side: 'YES' | 'NO') => void }) {
+  const market = predictionMarkets[0]
+  return (
+    <div
+      className="mx-3 my-2.5 rounded-xl bg-[#131720] p-4"
+      style={{
+        border: '1px solid #fb923c55',
+        borderLeft: '3px solid #fb923c',
+        boxShadow: '0 4px 48px rgba(251,146,60,0.18), 0 0 0 1px rgba(251,146,60,0.08)',
+      }}
+    >
+      <div className="flex items-center justify-between mb-3">
+        <span className="text-xs font-black tracking-widest uppercase" style={{ color: '#fb923c' }}>
+          🔮 Live Market
+        </span>
+        <span
+          className="text-[10px] font-bold px-2 py-0.5 rounded-full animate-pulse"
+          style={{ backgroundColor: '#f8717120', color: '#f87171', border: '1px solid #f8717140' }}
+        >
+          ⏰ Closing Soon
+        </span>
+      </div>
+
+      <p className="font-black text-sm text-[#f0f2f8] mb-3 leading-snug">{market.question}</p>
+
+      <div className="flex items-center gap-2 mb-2">
+        <span className="text-xs font-black w-16 text-right shrink-0" style={{ color: '#34d399' }}>YES {market.yesOdds}%</span>
+        <div className="flex-1 h-2 rounded-full overflow-hidden bg-[#2a3547]">
+          <div className="h-full rounded-full" style={{ width: `${market.yesOdds}%`, background: 'linear-gradient(90deg, #34d399, #22d3ee)' }} />
+        </div>
+        <span className="text-xs font-black w-16 shrink-0" style={{ color: '#f87171' }}>NO {market.noOdds}%</span>
+      </div>
+
+      <div className="text-[10px] text-[#6b7591] mb-3">{market.activity} 🔥</div>
+
+      <div className="flex gap-2">
+        <button
+          type="button"
+          onClick={() => onPickSide('YES')}
+          className="flex-1 py-2 rounded-xl text-xs font-black hover:opacity-90 transition-opacity"
+          style={{ backgroundColor: '#34d39922', color: '#34d399', border: '1px solid #34d39955' }}
+        >
+          Predict YES
+        </button>
+        <button
+          type="button"
+          onClick={() => onPickSide('NO')}
+          className="flex-1 py-2 rounded-xl text-xs font-black hover:opacity-90 transition-opacity"
+          style={{ backgroundColor: '#f8717122', color: '#f87171', border: '1px solid #f8717155' }}
+        >
+          Predict NO
+        </button>
+      </div>
+      <p className="text-[9px] text-[#3d4a5c] text-center mt-2">4,821 active traders · Join the market</p>
+    </div>
+  )
+}
 
 function SponsoredCard({ onUpgrade }: { onUpgrade: () => void }) {
   return (
@@ -168,7 +344,14 @@ function BoostModal({ onClose }: { onClose: () => void }) {
 export function Feed() {
   const [draft, setDraft] = useState('')
   const [showPaywall, setShowPaywall] = useState(false)
+  const [paywallFeature, setPaywallFeature] = useState('Following feed')
   const [showBoost, setShowBoost] = useState(false)
+  const [marketBetSide, setMarketBetSide] = useState<'YES' | 'NO' | null>(null)
+
+  const openPaywall = (feature: string) => {
+    setPaywallFeature(feature)
+    setShowPaywall(true)
+  }
 
   const handlePost = () => {
     setDraft('')
@@ -195,7 +378,7 @@ export function Feed() {
               type="button"
               className="flex-1 py-4 text-sm font-semibold transition-colors relative hover:bg-white/[0.04]"
               style={{ color: '#6b7591' }}
-              onClick={() => setShowPaywall(true)}
+              onClick={() => openPaywall('Following feed')}
             >
               Following 🔒
             </button>
@@ -236,15 +419,19 @@ export function Feed() {
             <Fragment key={tweet.id}>
               <TweetCard tweet={tweet} />
               {i === 2 && (
-                <SponsoredCard onUpgrade={() => setShowPaywall(true)} />
+                <SponsoredCard onUpgrade={() => openPaywall('Premium')} />
+              )}
+              {i === 4 && (
+                <MarketFeedCard onPickSide={(side) => setMarketBetSide(side)} />
               )}
             </Fragment>
           ))}
         </div>
       </div>
 
-      {showPaywall && <PaywallModal onClose={() => setShowPaywall(false)} feature="Following feed" />}
+      {showPaywall && <PaywallModal onClose={() => setShowPaywall(false)} feature={paywallFeature} />}
       {showBoost && <BoostModal onClose={() => setShowBoost(false)} />}
+      {marketBetSide && <MarketBetModal side={marketBetSide} onClose={() => setMarketBetSide(null)} />}
     </>
   )
 }

@@ -37,14 +37,8 @@ export function RightSidebar() {
   }
 
   const flipCard = (i: number) => {
-    if (cardTokens > 0) {
-      setCardTokens((t) => t - 1)
-      setFlippedCard(i)
-      setTimeout(() => setCardPurchase(true), 400)
-    } else {
-      setFlippedCard(i)
-      setTimeout(() => setCardPurchase(true), 400)
-    }
+    setFlippedCard(i)
+    setTimeout(() => setCardPurchase(true), 400)
   }
 
   const resetCards = () => {

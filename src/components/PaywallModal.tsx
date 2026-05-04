@@ -9,22 +9,22 @@ const PLANS = [
   {
     name: 'Starter', emoji: '⚡', color: '#22d3ee',
     monthly: 14.99, annual: 7.49,
-    perks: ['Verified badge', '2× reach boost', '10 DMs/day', '1 spin + 1 card draw/day'],
+    perks: ['Verified badge', '2× reach boost', '10 DMs/day', '1 spin + 1 card draw/day', '& much more'],
   },
   {
     name: 'Creator', emoji: '🌟', color: '#e879f9', popular: true,
     monthly: 39.99, annual: 19.99,
-    perks: ['5× reach boost', 'See who viewed you', '5 spins + 5 draws/day', 'Analytics dashboard'],
+    perks: ['5× reach boost', 'See who viewed you', '5 spins + 5 draws/day', 'Analytics dashboard', '& much more'],
   },
   {
     name: 'Elite', emoji: '👑', color: '#facc15',
     monthly: 79.99, annual: 39.99,
-    perks: ['10× reach boost', 'Unlimited DMs', '10 spins + draws/day', 'Priority in search'],
+    perks: ['10× reach boost', 'Unlimited DMs', '10 spins + draws/day', 'Priority in search', '& much more'],
   },
   {
     name: 'Titan', emoji: '💎', color: '#f87171',
     monthly: 199.99, annual: 99.99,
-    perks: ['Unlimited reach multiplier', 'Concierge support*', 'Dedicated account mgr', 'Unlimited spins + draws'],
+    perks: ['Unlimited reach multiplier', 'Concierge support*', 'Dedicated account mgr', 'Unlimited spins + draws', '& much more'],
   },
 ] as const
 
@@ -150,12 +150,18 @@ export function PaywallModal({ onClose, feature = 'this feature', detected = fal
             </div>
           </div>
           <ul className="space-y-1.5">
-            {plan.perks.map((perk) => (
-              <li key={perk} className="flex items-center gap-1.5 text-xs text-[#dde1ec]">
-                <span style={{ color: plan.color }}>✓</span>
-                {perk}
-              </li>
-            ))}
+            {plan.perks.map((perk) =>
+              perk === '& much more' ? (
+                <li key={perk} className="text-xs font-bold italic" style={{ color: plan.color }}>
+                  {perk}
+                </li>
+              ) : (
+                <li key={perk} className="flex items-center gap-1.5 text-xs text-[#dde1ec]">
+                  <span style={{ color: plan.color }}>✓</span>
+                  {perk}
+                </li>
+              )
+            )}
           </ul>
           {plan.name === 'Titan' && (
             <p className="text-[10px] text-[#3d4a5c] mt-2 italic">
