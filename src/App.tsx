@@ -42,7 +42,7 @@ export default function App() {
           This lets all fixed modals from child components participate in the
           root stacking context at their declared z-index. */}
       <div className="max-w-[1280px] mx-auto flex min-h-screen">
-        <aside className="hidden sm:flex w-[68px] xl:w-[275px] shrink-0 sticky top-0 h-screen flex-col px-1 xl:px-2">
+        <aside className="hidden sm:flex w-[68px] xl:w-[275px] shrink-0 sticky top-0 h-screen flex-col px-1 xl:px-2 overflow-y-auto scrollbar-none">
           <LeftSidebar />
         </aside>
 
