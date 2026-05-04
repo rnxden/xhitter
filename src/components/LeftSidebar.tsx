@@ -101,7 +101,7 @@ export function LeftSidebar() {
     setBetPurchaseItem({
       emoji: '🔮',
       name: `${betSide} — ${market.question.length > 42 ? market.question.slice(0, 42) + '…' : market.question}`,
-      description: `Potential win: $${win} · 15% platform fee on winnings`,
+      description: `Potential win: $${win} · We only take a tiny 15% cut of your winnings 🤝`,
       price: `$${amount.toFixed(2)}`,
       quantityLabel: `${betSide} at ${betOdds}% odds`,
     })
@@ -124,7 +124,7 @@ export function LeftSidebar() {
               item={item}
               isActive={item.label === 'Home'}
               onClick={
-                item.label === 'Home' || item.label === 'Markets'
+                item.label === 'Home'
                   ? () => {}
                   : () => openPaywall(item.label.toLowerCase())
               }

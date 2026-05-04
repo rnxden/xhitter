@@ -131,7 +131,7 @@ function MarketFeedCard({ onPickSide }: { onPickSide: (side: 'YES' | 'NO') => vo
       style={{
         border: '1px solid #fb923c55',
         borderLeft: '3px solid #fb923c',
-        boxShadow: '0 4px 48px rgba(251,146,60,0.18), 0 0 0 1px rgba(251,146,60,0.08)',
+        boxShadow: '0 4px 64px rgba(251,146,60,0.55), 0 0 0 1px rgba(251,146,60,0.22)',
       }}
     >
       <div className="flex items-center justify-between mb-3">
@@ -188,7 +188,7 @@ function SponsoredCard({ onUpgrade }: { onUpgrade: () => void }) {
       style={{
         border: '1px solid #facc1555',
         borderLeft: '3px solid #facc15',
-        boxShadow: '0 4px 48px rgba(250, 204, 21, 0.28), 0 0 0 1px rgba(250, 204, 21, 0.12)',
+        boxShadow: '0 4px 64px rgba(250, 204, 21, 0.55), 0 0 0 1px rgba(250, 204, 21, 0.22)',
       }}
     >
       <div className="flex items-center justify-between mb-3">
